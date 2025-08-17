@@ -1,0 +1,63 @@
+## Progress Report (Generated on %DATE%)
+
+This document tracks the progress of the backend development based on the tasks outlined in the `plan` file.
+
+### Phase 1: Planning and Setup
+
+**Dev1: Project Setup**
+- [x] Design architecture
+- [x] Create Spring Boot project
+- [x] Set up Git repository
+- [ ] Set up CI/CD (Skipped)
+- [ ] Configure Docker (Skipped)
+- [x] Create Spring Boot health endpoint
+
+**Dev 2: Database and Research**
+- [?] Research RFID reader APIs (Cannot be verified from codebase)
+- [x] Design database schema
+
+### Phase 2: Backend Core Development
+
+**Dev1: Authentication and Orders**
+- [x] Implement auth service (Spring Security, JWT)
+- [x] Build core order APIs (create, update status)
+- [x] Write integration tests (Unit and integration tests for core services are complete)
+- [x] Configure Flyway
+- [x] Write migrations
+
+**Dev2: Inventory**
+- [x] Implement inventory APIs
+- [x] Add low-stock alert logic
+- [x] Write unit tests for inventory APIs
+
+**Dev3: RFID**
+- [x] Implement RFID APIs (register, lookup)
+- [x] Write unit tests for RFID APIs
+
+### Phase 3: Backend API Expansion
+
+- [x] Build order retrieval API (`GET /orders/rfid/{uid}`)
+- [x] Build student order listing API (`GET /orders/student/{studentId}`)
+- [x] Implement real-time updates via WebSockets (new orders, stock levels)
+- [x] Implement OTP verification flow (`/rfid/generate-otp`, `/rfid/register`)
+
+### Phase 4: Transactions & Payments
+
+- [x] Implement order payment initiation API (`POST /orders/{id}/pay/upi`)
+- [x] Implement payment confirmation endpoint (`POST /api/payment/confirm`)
+- [x] Implement daily earnings API (`GET /earnings/daily`)
+- [x] Implement transaction history APIs (`GET /transactions`, `GET /transactions/{userId}`)
+- [x] Implement staff notifications for new orders and stock via WebSockets
+
+### Phase 5: Architectural Improvements
+- [x] Refactor Order entity to use OrderItem for better relational management.
+- [x] Implement Role-Based Access Control (RBAC) to secure sensitive endpoints.
+- [x] Implement a global exception handler for consistent error responses.
+- [x] Add @Transactional to PaymentService.handleCallback to ensure data integrity.
+
+---
+**Legend:**
+- `[x]` = Done
+- `[p]` = In Progress
+- `[ ]` = Not Done
+- `[?]` = Cannot Verify / Needs Checking

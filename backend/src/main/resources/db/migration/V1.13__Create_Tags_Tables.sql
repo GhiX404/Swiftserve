@@ -1,0 +1,10 @@
+CREATE TABLE tags (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) UNIQUE NOT NULL
+);
+
+CREATE TABLE menu_tags (
+    menu_id BIGINT NOT NULL REFERENCES menu(id) ON DELETE CASCADE,
+    tag_id INTEGER NOT NULL REFERENCES tags(id) ON DELETE CASCADE,
+    PRIMARY KEY (menu_id, tag_id)
+); 

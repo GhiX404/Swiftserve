@@ -1,0 +1,18 @@
+CREATE TABLE menu (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    price DECIMAL(10, 2) NOT NULL,
+    stock INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE tags (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+);
+
+CREATE TABLE menu_tags (
+    menu_id BIGINT NOT NULL REFERENCES menu(id),
+    tag_id BIGINT NOT NULL REFERENCES tags(id),
+    PRIMARY KEY (menu_id, tag_id)
+);

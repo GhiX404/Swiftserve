@@ -1,0 +1,5 @@
+CREATE TABLE rfid_mappings (
+    rfid_uid VARCHAR(255) PRIMARY KEY,
+    student_id BIGINT NOT NULL UNIQUE REFERENCES users(id),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);

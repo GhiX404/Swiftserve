@@ -1,0 +1,228 @@
+# API Endpoint Testing Guide
+
+This document provides a comprehensive list of all API endpoints for testing purposes. It uses common templating syntax (e.g., `{{baseUrl}}`) for variables that you would typically configure in a testing tool like Postman.
+
+## ---------------------------
+## Setup & Variables
+## ---------------------------
+
+- `baseUrl`: The base URL of the running application (e.g., `http://localhost:8080`).
+- `student_token`: The JWT access token for a user with `ROLE_STUDENT`.
+- `staff_token`: The JWT access token for a user with `ROLE_STAFF`.
+
+## ---------------------------
+## 1. Authentication (`/api/auth`)
+## ---------------------------
+
+### Register a New Student
+- **Endpoint**: `POST {{baseUrl}}/api/auth/register`
+- **Description**: Creates a new user with the `ROLE_STUDENT`.
+- **Body**: `(application/json)`
+  ```json
+  {
+    "name": "Test Student",
+    "email": "student@test.com",
+    "password": "password123"
+  }
+  ```
+
+### Log In
+- **Endpoint**: `POST {{baseUrl}}/api/auth/login`
+- **Description**: Authenticates a user and returns JWT access and refresh tokens.
+- **Body**: `(application/json)`
+  ```json
+  {
+    "email": "student@test.com",
+    "password": "password123"
+  }
+  ```
+- **Note**: Save the `accessToken` to use as `student_token` or `staff_token` in subsequent requests.
+
+### Refresh Access Token
+- **Endpoint**: `POST {{baseUrl}}/api/auth/refresh`
+- **Description**: Obtains a new access token using a refresh token.
+- **Body**: `(application/json)`
+  ```json
+  {
+    "refreshToken": "your_refresh_token"
+  }
+  ```
+
+## ---------------------------
+## 2. Menu (`/api/menu`)
+## ---------------------------
+
+### Add a New Menu Item (Staff Only)
+- **Endpoint**: `POST {{baseUrl}}/api/menu`
+- **Headers**: `Authorization: Bearer {{staff_token}}`
+- **Body**: `(application/json)`
+  ```json
+  {
+    "name": "Spicy Pizza",
+    "price": 12.99,
+    "stock": 50,
+    "tags": ["spicy", "vegetarian"]
+  }
+  ```
+
+### Get All Menu Items
+- **Endpoint**: `GET {{baseUrl}}/api/menu`
+- **Headers**: `Authorization: Bearer {{student_token}}`
+
+### Filter Menu Items by Tags
+- **Endpoint**: `GET {{baseUrl}}/api/menu?tags=spicy,vegetarian`
+- **Headers**: `Authorization: Bearer {{student_token}}`
+
+### Update Stock (Staff Only)
+- **Endpoint**: `PUT {{baseUrl}}/api/menu/{id}/stock`
+- **Description**: Updates the stock level for a menu item. Use positive values to add stock, negative values to reduce stock.
+- **Headers**: `Authorization: Bearer {{staff_token}}`
+- **Body**: `(application/json)`
+  ```json
+  {
+    "quantityChange": -1
+  }
+  ```
+- **Note**: This endpoint will trigger WebSocket notifications to staff if stock levels are low (< 5).
+
+## ---------------------------
+## 3. Orders (`/api/orders`)
+## ---------------------------
+
+### Create a New Order (Student)
+- **Endpoint**: `POST {{baseUrl}}/api/orders`
+- **Headers**: `Authorization: Bearer {{student_token}}`
+- **Body**: `(application/json)`
+  ```json
+  {
+    "items": [
+      {
+        "menuItemId": 1,
+        "quantity": 2
+      }
+    ]
+  }
+  ```
+
+### Initiate UPI Payment (Student)
+- **Endpoint**: `POST {{baseUrl}}/api/orders/{id}/pay/upi`
+- **Headers**: `Authorization: Bearer {{student_token}}`
+- **Description**: Initiates a UPI payment for an order and returns a transaction ID.
+
+### Dispatch Order (Staff Only)
+- **Endpoint**: `POST {{baseUrl}}/api/orders/{id}/dispatch`
+- **Description**: Marks an order as ready and sends a push notification to the user.
+- **Headers**: `Authorization: Bearer {{staff_token}}`
+
+### Confirm Order Collection (Student)
+- **Endpoint**: `POST {{baseUrl}}/api/orders/{id}/confirm-collection`
+- **Description**: The student confirms they have picked up the order.
+- **Headers**: `Authorization: Bearer {{student_token}}`
+- **Note**: Triggers a WebSocket notification to staff dashboard.
+
+### Get My Orders
+- **Endpoint**: `GET {{baseUrl}}/api/orders/my-orders`
+- **Headers**: `Authorization: Bearer {{student_token}}`
+
+### Get Orders by RFID
+- **Endpoint**: `GET {{baseUrl}}/api/orders/rfid/{uid}`
+- **Headers**: `Authorization: Bearer {{student_token}}`
+
+## ---------------------------
+## 4. User & RFID
+## ---------------------------
+
+### Get Current User Details
+- **Endpoint**: `GET {{baseUrl}}/api/user/me`
+- **Headers**: `Authorization: Bearer {{student_token}}`
+- **Description**: Retrieves the profile of the currently authenticated user.
+
+### Register FCM Token
+- **Endpoint**: `POST {{baseUrl}}/api/user/fcm-token`
+- **Headers**: `Authorization: Bearer {{student_token}}`
+- **Body**: `(application/json)`
+  ```json
+  {
+    "token": "your_firebase_cloud_messaging_device_token"
+  }
+  ```
+
+### Generate OTP for RFID Registration
+- **Endpoint**: `POST {{baseUrl}}/api/rfid/generate-otp`
+- **Headers**: `Authorization: Bearer {{student_token}}`
+
+### Register RFID with OTP
+- **Endpoint**: `POST {{baseUrl}}/api/rfid/register`
+- **Headers**: `Authorization: Bearer {{student_token}}`
+- **Body**: `(application/json)`
+  ```json
+  {
+    "rfidUid": "ABC123XYZ",
+    "otp": "123456"
+  }
+  ```
+
+### Register RFID by Admin (Staff Only)
+- **Endpoint**: `POST {{baseUrl}}/api/rfid/admin/register`
+- **Headers**: `Authorization: Bearer {{staff_token}}`
+- **Body**: `(application/json)`
+  ```json
+  {
+    "rfidUid": "DEF456HIJ",
+    "studentId": 2
+  }
+  ```
+
+### Get RFID Mapping
+- **Endpoint**: `GET {{baseUrl}}/api/rfid/{uid}`
+- **Headers**: `Authorization: Bearer {{student_token}}`
+
+## ---------------------------
+## 5. Transactions & Earnings
+## ---------------------------
+
+### Get All Transactions (Staff Only)
+- **Endpoint**: `GET {{baseUrl}}/api/transactions`
+- **Headers**: `Authorization: Bearer {{staff_token}}`
+- **Description**: Returns all transaction records, restricted to staff users.
+
+### Get My Transactions
+- **Endpoint**: `GET {{baseUrl}}/api/transactions/my-transactions`
+- **Headers**: `Authorization: Bearer {{student_token}}`
+- **Description**: Returns transaction history for the currently authenticated user.
+
+### Get Daily Earnings (Staff Only)
+- **Endpoint**: `GET {{baseUrl}}/api/earnings/daily`
+- **Headers**: `Authorization: Bearer {{staff_token}}`
+- **Description**: Returns the sum of all transaction amounts for the current day.
+
+## ---------------------------
+## 6. Payment (External)
+## ---------------------------
+
+### Payment Gateway Callback
+- **Endpoint**: `POST {{baseUrl}}/api/payment/callback`
+- **Description**: This endpoint is called by the external payment gateway after payment processing.
+- **Body**: `(application/json)`
+  ```json
+  {
+    "transactionId": "external_transaction_id",
+    "orderId": 1,
+    "amount": 25.98,
+    "status": "SUCCESS"
+  }
+  ```
+- **Note**: When successful payment is processed, a WebSocket notification is sent to staff about the new paid order.
+
+## ---------------------------
+## 7. WebSocket Notifications
+## ---------------------------
+
+### Connect to WebSocket
+- **Endpoint**: `ws://{{baseUrl}}/ws`
+- **Description**: WebSocket endpoint for real-time notifications
+
+### WebSocket Topics
+- `/topic/staff/new-orders` - Notifies staff about new paid orders
+- `/topic/staff/stock-alerts` - Notifies staff about low stock levels
+- `/topic/staff/order-confirmations` - Notifies staff about order collection confirmations
