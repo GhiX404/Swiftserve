@@ -1,0 +1,47 @@
+[
+  {
+    "itemname": "Masala Dosa",
+    "itemprice": "40",
+    "itemimagelink": "https://example.com/images/masala_dosa.png"
+  },
+  {
+    "itemname": "Idli Sambar",
+    "itemprice": "30",
+    "itemimagelink": "https://example.com/images/idli_sambar.png"
+  },
+  {
+    "itemname": "Veg Fried Rice",
+    "itemprice": "70",
+    "itemimagelink": "https://example.com/images/veg_fried_rice.png"
+  },
+  {
+    "itemname": "Paneer Butter Masala",
+    "itemprice": "120",
+    "itemimagelink": "https://example.com/images/paneer_butter_masala.png"
+  },
+  {
+    "itemname": "Chappathi Kurma",
+    "itemprice": "50",
+    "itemimagelink": "https://example.com/images/chappathi_kurma.png"
+  },
+  {
+    "itemname": "Poha",
+    "itemprice": "35",
+    "itemimagelink": "https://example.com/images/poha.png"
+  },
+  {
+    "itemname": "Poori Bhaji",
+    "itemprice": "45",
+    "itemimagelink": "https://example.com/images/poori_bhaji.png"
+  },
+  {
+    "itemname": "Tea",
+    "itemprice": "10",
+    "itemimagelink": "https://example.com/images/tea.png"
+  },
+  {
+    "itemname": "Coffee",
+    "itemprice": "15",
+    "itemimagelink": "https://example.com/images/coffee.png"
+  }
+]
